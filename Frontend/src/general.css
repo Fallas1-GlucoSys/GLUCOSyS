@@ -1,0 +1,16 @@
+@import url('https://fonts.cdnfonts.com/css/oxford-street');
+:root{
+    --primary: rgba(0,45,69,1);
+    --secondary: rgba(0,155,238,1);
+    --gradient: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    --bg-gradient: linear-gradient(180.3deg, rgb(221, 221, 221) 5.5%, rgb(110, 136, 161) 90.2%);
+    font-family: 'Oxford Street', sans-serif;
+    background: var(--bg-gradient);
+    height: 100vh;
+}
+
+.hover-opacity:hover{
+    opacity:80%;
+    cursor:pointer;
+    background-color: initial !important;
+}
