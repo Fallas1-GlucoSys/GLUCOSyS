@@ -10,10 +10,13 @@ logger = logging.getLogger("uvicorn.error")
 async def diabetes_probability(datosUsuario: InputForRules):
     try:
         dictDatosUser = datosUsuario.dict()
-        print(dictDatosUser)
         response = glucosys(datosUsuario=dictDatosUser)
         logger.info(f"Response: {response}") 
-        return response
+        return DiabetesResponse(
+            probability=response["probability"],
+            type=response["type"],
+            info=response["info"]
+        )
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         raise HTTPException(status_code=500, detail=f"Internal error: {e}") from e
