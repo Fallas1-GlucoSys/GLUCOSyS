@@ -62,7 +62,7 @@ export const DynamicForm = () => {
           "Content-Type": "application/json",
         },
         //Filtro los empty strings. No tiene sentido mandarlos.
-        body: JSON.stringify(Object.fromEntries(Object.entries(datosUsuario).filter(([_, v]) => v != null && v != undefined && v !== "")))
+        body: JSON.stringify(Object.fromEntries(Object.entries(datosUsuario).filter(([_, v]) => v !== null && v !== undefined && v !== "")))
       }
     );
     if (response.status !== 200){
