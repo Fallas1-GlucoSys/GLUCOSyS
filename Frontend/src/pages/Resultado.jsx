@@ -1,10 +1,14 @@
 import React from 'react'
 import { Container, Box, Typography, Button, Stack, Grid } from "@mui/material";
 import { useNavigate } from 'react-router';
+import { useLocation } from "react-router-dom";
 
 export const Resultado = () => {
 
   const navigate = useNavigate();
+  const location = useLocation();
+  //Los datos llegan por el navigate
+  const diabetes_result = location.state;
 
   return (
     <Stack justifyContent="center"> 
@@ -14,7 +18,17 @@ export const Resultado = () => {
       </Grid>
       <Grid item xs={12} textAlign="center">
         <Typography variant='p' fontSize="19px">
-          TODO
+          Probabilidad: {diabetes_result.probability}
+        </Typography>
+      </Grid>
+      <Grid item xs={12} textAlign="center">
+        <Typography variant='p' fontSize="19px">
+          Tipo de Diabetes: {diabetes_result.type}
+        </Typography>
+      </Grid>
+      <Grid item xs={12} textAlign="center">
+        <Typography variant='p' fontSize="19px">
+          Info: {diabetes_result.info}
         </Typography>
       </Grid>
       <Grid item xs={12} textAlign="center">

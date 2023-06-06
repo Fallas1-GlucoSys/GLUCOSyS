@@ -4,13 +4,15 @@ import { DatosUsuarioContext } from './DatosUsuarioContext';
 export const DatosUsuarioContextProvider = ({children}) => {
 
   const [datosUsuario, setDatosUsuario] = useState({
-      // 'hambre':false,
-      // 'orina':false,
-      // 'peso':false,
-      // 'hidratacion':true,
-      // 'aliento':true,
-      // 'glucemia': undefined,
-      // 'anticuerpos_pancreaticos': false
+    'PoseeLaboratorio': "",
+    'Glucemia': "",
+    'Hambre':"",
+    'Orina':"",
+    'Peso':"",
+    'Hidratacion':"",
+    'AnticuerposPancreaticos': "",
+    'AlientoFuerteYDulce':"",
+    
   });
 
   return (

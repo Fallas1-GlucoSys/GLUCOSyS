@@ -1,22 +1,18 @@
-from fastapi import APIRouter, status, Request, HTTPException
-from schemas.HTTPSchemas import InputForRules, DiabetesResponse
+from fastapi import APIRouter, status, HTTPException
+from schemas.HTTPSchemas import InputForRules
 from app.glucosys import glucosys
 import logging
 
 router = APIRouter()
 logger = logging.getLogger("uvicorn.error")
 
-@router.post("/diabetes_probability", status_code = status.HTTP_200_OK, response_model=DiabetesResponse)
+@router.post("/diabetes_probability", status_code = status.HTTP_200_OK)
 async def diabetes_probability(datosUsuario: InputForRules):
     try:
         dictDatosUser = datosUsuario.dict()
         response = glucosys(datosUsuario=dictDatosUser)
         logger.info(f"Response: {response}") 
-        return DiabetesResponse(
-            probability=response["probability"],
-            type=response["type"],
-            info=response["info"]
-        )
+        return response
     except Exception as e:
         logger.error(f"Unexpected error: {e}")
         raise HTTPException(status_code=500, detail=f"Internal error: {e}") from e

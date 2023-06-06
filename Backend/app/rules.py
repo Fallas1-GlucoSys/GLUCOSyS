@@ -680,9 +680,6 @@ rules = {
         "type": "Ninguno",
         "info": 'Según los datos introducidos, no tiene de que preocuparse ya que su probabilidad de tener actualmente diabetes es nula.'
     },
-
-    
-
 }
 
 
