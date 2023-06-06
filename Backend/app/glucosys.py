@@ -1,6 +1,5 @@
 from schemas.HTTPSchemas import InputForRules
 import rule_engine
-# from app.rules import rules
 from app.questions_generator import questions_sintomas_generales, questions_sintomas_particulares, questions_glucemia
 from app.probability_rules import probability_rules
 from app.diabetes_type_rules import diabetes_type_rules
