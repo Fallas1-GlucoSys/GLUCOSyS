@@ -14,3 +14,8 @@
     cursor:pointer;
     background-color: initial !important;
 }
+
+.chip-proba{
+    font-size: 1.5em !important;
+    padding: 1em !important;
+}
