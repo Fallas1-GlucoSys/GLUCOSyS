@@ -35,10 +35,10 @@ def calcular_cant_sintomas_grales(datosUsuario):
     if not (tieneHambre or tieneOrina or tieneSed or tienePDP):
         return -1
     return (
-        (1 if tieneHambre else 0) + 
-        (1 if tieneOrina else 0) + 
-        (1 if tieneSed else 0) + 
-        (1 if tienePDP else 0)
+        (1 if datosUsuario["Hambre"] != False else 0) + 
+        (1 if datosUsuario["Orina"] != False else 0) + 
+        (1 if datosUsuario["Sed"] != False else 0) + 
+        (1 if datosUsuario["PerdidaDePeso"] != False else 0)
     )
 
 
