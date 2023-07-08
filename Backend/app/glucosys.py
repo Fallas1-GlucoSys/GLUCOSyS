@@ -24,6 +24,8 @@ INFO_DIABETES_TIPO_2 = '''
         
     Al principio, su cuerpo produce más insulina para tratar de que las células respondan. \
         Pero con el tiempo, su cuerpo no puede producir suficiente insulina y sus niveles de glucosa en la sangre aumentan.
+
+    <strong>Si usted cree que puede tener esta enfermadad, debería acudir a un médico para un diagnóstico profesional.</strong>
 '''
 
 def calcular_cant_sintomas_grales(datosUsuario):
