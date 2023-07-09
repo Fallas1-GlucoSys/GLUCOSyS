@@ -6,7 +6,7 @@
     --bg-gradient: linear-gradient(180.3deg, rgb(221, 221, 221) 5.5%, rgb(110, 136, 161) 90.2%);
     font-family: 'Oxford Street', sans-serif;
     background: var(--bg-gradient);
-    height: 100%;
+    min-height: 100%;
 }
 
 .hover-opacity:hover{
