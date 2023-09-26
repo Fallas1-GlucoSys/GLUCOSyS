@@ -1,8 +1,8 @@
 from schemas.HTTPSchemas import InputForRules
 import rule_engine
 from app.questions_generator import questions_sintomas_generales, questions_sintomas_particulares, questions_glucemia
-from app.probability_rules import probability_rules
-from app.diabetes_type_rules import diabetes_type_rules
+from Backend.fallas1.probability_rules import probability_rules
+from Backend.fallas1.diabetes_type_rules import diabetes_type_rules
 import json
 
 INFO_DIABETES_TIPO_1 = '''

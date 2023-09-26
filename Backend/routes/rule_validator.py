@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, HTTPException
 from schemas.HTTPSchemas import InputForRules
-from app.glucosys import glucosys
+from app.glucosys_with_frames import glucosys
 import logging
 
 router = APIRouter()
