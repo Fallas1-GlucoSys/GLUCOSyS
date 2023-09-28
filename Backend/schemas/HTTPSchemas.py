@@ -9,3 +9,4 @@ class InputForRules(BaseModel):
     Glucemia: float | None
     AnticuerposPancreaticos: bool | None
     AlientoFuerteYDulce: bool | None
+    ClientId: int

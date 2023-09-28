@@ -31,6 +31,8 @@ INFO_DIABETES = {
     "Nulo": "Usted no posee probabilidad de tener diabetes con los valores enviados."
 }
 
+currentFrames = {}
+
 
 def calcular_cant_sintomas_grales(datosUsuario):
     tieneHambre = "Hambre" in datosUsuario and datosUsuario["Hambre"] != None
@@ -58,14 +60,24 @@ def calcular_cant_sintomas_particulares(datosUsuario):
 
 
 def getProbability(datosUsuario: dict):
-    probabilityFrame = createFramesProbability()
-    for key, value in datosUsuario.items():
-        probabilityFrame.completeAttribute(key, value)
+    if (not (datosUsuario["ClientId"] in currentFrames)):
+        currentFrames[datosUsuario["ClientId"]] = {
+            "Probability": createFramesProbability(),
+            "Type": None
+        }
+    elif ((datosUsuario["ClientId"] in currentFrames) and (currentFrames[datosUsuario["ClientId"]]["Probability"] is None)):
+        currentFrames[datosUsuario["ClientId"]]["Probability"] = createFramesProbability()
+    probabilityFrame = currentFrames[datosUsuario["ClientId"]]["Probability"]
+    probabilityFrame.resetValues()
     cantSintomasGrales = calcular_cant_sintomas_grales(datosUsuario)
     if cantSintomasGrales >= 0:
         probabilityFrame.completeAttribute("CantidadSintomas", cantSintomasGrales)
-    probabilityResult = probabilityFrame.continueChaining()
-    return probabilityResult
+    for key, value in datosUsuario.items():
+        iterRes = probabilityFrame.completeAttribute(key, value)
+        # Puede devolver None si ningun frame tiene el attr a agregar
+        if iterRes is not None:
+            lastRes = iterRes
+    return lastRes
 
 
 def generateQuestionsProbability(neededFields: dict):
@@ -82,14 +94,23 @@ def generateQuestionsProbability(neededFields: dict):
 
 
 def getTypeDiabetes(datosUsuario: dict):
-    typeFrame = createFramesTypeDiabetes()
-    for key, value in datosUsuario.items():
-        typeFrame.completeAttribute(key, value)
+    if not (datosUsuario["ClientId"] in currentFrames):
+        currentFrames[datosUsuario["ClientId"]] = {
+            "Probability": None,
+            "Type": createFramesTypeDiabetes()
+        }
+    elif datosUsuario["ClientId"] in currentFrames and currentFrames[datosUsuario["ClientId"]]["Type"] is None:
+        currentFrames[datosUsuario["ClientId"]]["Type"] = createFramesTypeDiabetes()
+    typeFrame = currentFrames[datosUsuario["ClientId"]]["Type"]
+    typeFrame.resetValues()
     cantSintomasParticulares = calcular_cant_sintomas_particulares(datosUsuario)
     if cantSintomasParticulares >= 0:
         typeFrame.completeAttribute("CantidadSintomasParticulares", cantSintomasParticulares)
-    typeResult = typeFrame.continueBackwardChaining()
-    return typeResult
+    for key, value in datosUsuario.items():
+        iterRes = typeFrame.completeAttribute(key, value)
+        if iterRes is not None:
+            lastRes = iterRes
+    return lastRes
 
 
 def generateQuestionsTypeDiabetes():

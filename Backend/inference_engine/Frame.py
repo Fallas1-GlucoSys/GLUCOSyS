@@ -23,14 +23,29 @@ class Frame:
 
 
     def completeAttribute(self, attributeName, attributeValue):
+        retorno = None
+        retornoLocal = None
+        retornoAskChild = None
         if (attributeName in self.__attributes):
-            prevVal = self.__attributes[attributeName].getValue()
             self.__attributes[attributeName].setValue(attributeValue)
-            # Si no es válido el nuevo valor lo reestablezco.
-            if not (self.__attributes[attributeName].validate()):
-                self.__attributes[attributeName].setValue(prevVal)
+            retornoLocal = self.__attributes[attributeName].onAdd(self.__attributes)
         for child in self.__childrenFrames:
-            child.completeAttribute(attributeName, attributeValue)
+            respChild = child.completeAttribute(attributeName, attributeValue)
+            if respChild is not None:
+                if respChild["type"] == self.RESULT:
+                    retorno = respChild
+                elif respChild["type"] == self.ASK:
+                    retornoAskChild = respChild
+        if ((retorno is not None) or (retornoLocal is not None and retornoLocal["type"] == self.RESULT)):
+            if retornoLocal["type"] == self.RESULT:
+                retornoLocal["value"] = self.__frameResult
+        if retorno is not None:
+            return retorno
+        elif ( retornoLocal is not None ):
+            return retornoLocal
+        else:
+            return retornoAskChild
+        
 
     
     def isComplete(self):
@@ -48,63 +63,9 @@ class Frame:
         return True
     
 
-    def __askForNeededAttributes(self):
-        neededAttrs = []
-        for key, value in self.__attributes.items():
-            if not value.isCompleted():
-                neededAttrs.append(key)
-        return {
-            "type": self.ASK,
-            "value": neededAttrs
-        }
-    
-
-    def continueChaining(self):
-        if self.isComplete():
-            if len(self.__childrenFrames) == 0:
-                # Frame's name will give the result because it is full, and does not have any childs
-                return {
-                    "type": self.RESULT,
-                    "value": self.__frameResult
-                }
-            else:
-                # First we found in Breadth
-                for child in self.__childrenFrames:
-                    if child.isComplete():
-                        return child.continueChaining()
-                # No child is complete, then we will continue with the ones that are valid...
-                for child in self.__childrenFrames:
-                    # At least partial attributes should be valid (If not that frame won't give result...)
-                    if child.isCurrentlyValid():
-                        return child.continueChaining()
-                # Frames is valid and has childs, but it's childs are invalid, so... That frame is the result.
-                return {
-                    "type": self.RESULT,
-                    "value": self.__frameResult
-                }
-        else:
-            return self.__askForNeededAttributes()
-        
-
-    def continueBackwardChaining(self):
-        if self.isComplete():
-            if len(self.__childrenFrames) == 0:
-                # Frame's name will give the result because it is full, and does not have any childs
-                return {
-                    "type": self.RESULT,
-                    "value": self.__frameResult
-                }
-            else:
-                # It first finds on Deep
-                for child in self.__childrenFrames:
-                    # At least partial attributes should be valid (If not that frame won't give result...)
-                    if child.isCurrentlyValid():
-                        return child.continueChaining()
-                # Frames is valid and has childs, but it's childs are invalid, so... That frame is the result.
-                return {
-                    "type": self.RESULT,
-                    "value": self.__frameResult
-                }
-        else:
-            return self.__askForNeededAttributes()
+    def resetValues(self):
+        for attr in self.__attributes.values():
+            attr.setValue(None)
+        for child in self.__childrenFrames:
+            child.resetValues()
         
