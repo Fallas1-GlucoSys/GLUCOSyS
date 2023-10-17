@@ -23,7 +23,6 @@ class Frame:
 
 
     def completeAttribute(self, attributeName, attributeValue):
-        retorno = None
         retornoLocal = None
         retornoAskChild = None
         if (attributeName in self.__attributes):
@@ -31,29 +30,18 @@ class Frame:
             retornoLocal = self.__attributes[attributeName].onAdd(self.__attributes)
         for child in self.__childrenFrames:
             respChild = child.completeAttribute(attributeName, attributeValue)
-            if respChild is not None:
+            if respChild is not None and respChild["type"] != None:
                 if respChild["type"] == self.RESULT:
-                    retorno = respChild
+                    return respChild
                 elif respChild["type"] == self.ASK:
                     retornoAskChild = respChild
-        if ((retorno is not None) or (retornoLocal is not None and retornoLocal["type"] == self.RESULT)):
-            if retornoLocal["type"] == self.RESULT:
-                retornoLocal["value"] = self.__frameResult
-        if retorno is not None:
-            return retorno
-        elif ( retornoLocal is not None ):
+        if (retornoLocal is not None and retornoLocal["type"] == self.RESULT):
+            retornoLocal["value"] = self.__frameResult
             return retornoLocal
-        else:
-            return retornoAskChild
         
-
-    
-    def isComplete(self):
-        for attr in self.__attributes.values():
-            if (not attr.validate()) or (not attr.isCompleted()):
-                return False
-        return True
-    
+        if retornoAskChild is not None:
+            return retornoAskChild
+        return retornoLocal
 
 
     def isCurrentlyValid(self):
