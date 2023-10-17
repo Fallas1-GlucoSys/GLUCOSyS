@@ -1,4 +1,4 @@
-from app.questions_generator import questions_sintomas_generales, questions_sintomas_particulares, questions_glucemia
+from app.questions_generator import questions_sintomas_generales, questions_sintomas_particulares, questions_glucemia, questions_laboratorio
 from frames.frames_proba_glucosys import createFrames as createFramesProbability
 from frames.frames_tipo_glucosys import createFrames as createFramesTypeDiabetes
 
@@ -31,6 +31,13 @@ INFO_DIABETES = {
     "Nulo": "Usted no posee probabilidad de tener diabetes con los valores enviados."
 }
 
+RESPUESTA_SIN_LABORATORIO = {
+    "response_type": "RESULT",
+    "type": "Desconocido",
+    "probability": "Desconocida",
+    "info": "No puede realizar el presente diagnóstico sin estudios de laboratorio."
+}
+
 currentFrames = {}
 
 
@@ -60,6 +67,7 @@ def calcular_cant_sintomas_particulares(datosUsuario):
 
 
 def getProbability(datosUsuario: dict):
+    lastRes = None
     if (not (datosUsuario["ClientId"] in currentFrames)):
         currentFrames[datosUsuario["ClientId"]] = {
             "Probability": createFramesProbability(),
@@ -73,10 +81,13 @@ def getProbability(datosUsuario: dict):
     if cantSintomasGrales >= 0:
         probabilityFrame.completeAttribute("CantidadSintomas", cantSintomasGrales)
     for key, value in datosUsuario.items():
-        iterRes = probabilityFrame.completeAttribute(key, value)
-        # Puede devolver None si ningun frame tiene el attr a agregar
-        if iterRes is not None:
-            lastRes = iterRes
+        if key != "ClientId" and value is not None:
+            iterRes = probabilityFrame.completeAttribute(key, value)
+            # Puede devolver None si ningun frame tiene el attr a agregar
+            if iterRes is not None:
+                if iterRes["type"] == "RESULT":
+                    return iterRes
+                lastRes = iterRes
     return lastRes
 
 
@@ -88,12 +99,15 @@ def generateQuestionsProbability(neededFields: dict):
         res["questions"] = questions_glucemia
     elif ("Hambre" in neededFields or "Orina" in neededFields or "Sed" in neededFields or "PerdidaDePeso" in neededFields):
         res["questions"] = questions_sintomas_generales
+    elif ("PoseeLaboratorio" in neededFields):
+        res["questions"] = questions_laboratorio
     else:
         res["questions"] = questions_sintomas_particulares
     return res
 
 
 def getTypeDiabetes(datosUsuario: dict):
+    lastRes = None
     if not (datosUsuario["ClientId"] in currentFrames):
         currentFrames[datosUsuario["ClientId"]] = {
             "Probability": None,
@@ -124,6 +138,8 @@ def glucosys(datosUsuario: dict):
     resProba = getProbability(datosUsuario)
     if resProba["type"] == "ASK":
         return generateQuestionsProbability(resProba["value"])
+    elif resProba["type"] == "RESULT" and resProba["value"] == "Sin Resultado":
+        return RESPUESTA_SIN_LABORATORIO
     resTypeDiabetes = getTypeDiabetes(datosUsuario)
     if resTypeDiabetes["type"] == "ASK":
         return generateQuestionsTypeDiabetes()

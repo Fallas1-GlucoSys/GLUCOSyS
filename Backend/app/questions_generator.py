@@ -1,3 +1,13 @@
+questions_laboratorio = [
+    {
+        "question": "¿Posee usted análisis de sangre recientes con estudios de glucemia y anticuerpos?",
+        "field": "PoseeLaboratorio",
+        "options": [
+            {"value": True, "text_to_show":"Sí, poseo"},
+            {"value": False, "text_to_show":"No, no poseo"}
+        ]
+  }
+]
 
 questions_sintomas_generales = [
     {
